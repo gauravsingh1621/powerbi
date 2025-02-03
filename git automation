@@ -1,0 +1,48 @@
+import git
+import os
+import sys
+
+# Define the path to your local Git repository
+repo_path = r'C:\Users\Gaurav singh\Documents'
+
+# Open the repository
+try:
+    repo = git.Repo(repo_path)
+except git.exc.InvalidGitRepositoryError:
+    print(f"The directory {repo_path} is not a valid Git repository.")
+    sys.exit(1)
+except Exception as e:
+    print(f"An error occurred while opening the repository: {e}")
+    sys.exit(1)
+
+# Stage all changes (including new, modified, and deleted files)
+try:
+    repo.git.add('--all')
+    print("Staged all changes.")
+except Exception as e:
+    print(f"An error occurred while staging changes: {e}")
+    sys.exit(1)
+
+# Define your commit message; you can customize or parameterize this if needed.
+commit_message = "Automated commit"
+
+# Commit the changes
+try:
+    # If there is nothing to commit, GitPython will raise an exception.
+    repo.index.commit(commit_message)
+    print(f"Committed changes with message: '{commit_message}'.")
+except Exception as e:
+    print(f"An error occurred during commit (perhaps there were no changes to commit): {e}")
+    # Optionally, you can exit or continue based on your needs.
+    # sys.exit(1)
+
+# Push changes to the remote repository (assuming remote name is 'origin')
+try:
+    origin = repo.remote(name='origin')
+    push_info = origin.push()
+    print("Push information:")
+    for info in push_info:
+        print(info.summary)
+except Exception as e:
+    print(f"An error occurred while pushing changes: {e}")
+    sys.exit(1)

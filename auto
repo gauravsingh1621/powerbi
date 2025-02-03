@@ -1,0 +1,46 @@
+import git
+import sys
+
+# In Codespaces, the current working directory is usually your repository.
+# If your repository is in a subfolder, adjust the path accordingly.
+repo_path = '.'
+
+try:
+    # Open the repository
+    repo = git.Repo(repo_path)
+except git.exc.InvalidGitRepositoryError:
+    print(f"The directory {repo_path} is not a valid Git repository.")
+    sys.exit(1)
+except Exception as e:
+    print(f"Error opening repository: {e}")
+    sys.exit(1)
+
+# Stage all changes (new, modified, and deleted files)
+try:
+    repo.git.add('--all')
+    print("All changes have been staged.")
+except Exception as e:
+    print(f"Error staging changes: {e}")
+    sys.exit(1)
+
+# Commit changes with a preset commit message
+commit_message = "Automated commit from Codespaces"
+
+try:
+    repo.index.commit(commit_message)
+    print(f"Committed changes with message: '{commit_message}'")
+except Exception as e:
+    print(f"Error committing changes (maybe there was nothing to commit): {e}")
+    # Depending on your workflow, you can choose to exit or continue.
+    # sys.exit(1)
+
+# Push changes to the remote repository (assuming the remote is named 'origin')
+try:
+    origin = repo.remote(name='origin')
+    push_info = origin.push()
+    print("Push completed. Details:")
+    for info in push_info:
+        print(info.summary)
+except Exception as e:
+    print(f"Error pushing changes: {e}")
+    sys.exit(1)

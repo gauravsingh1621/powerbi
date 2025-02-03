@@ -1,0 +1,31 @@
+import requests
+import time
+
+# Replace with your GitHub credentials
+GITHUB_USERNAME = "your_username"
+GITHUB_TOKEN = "your_personal_access_token"
+
+# List of repositories to create
+repo_names = ["Repo1", "Repo2", "Repo3"]  # Add more names as needed
+
+# GitHub API endpoint
+GITHUB_API_URL = "https://api.github.com/user/repos"
+
+# Loop through each repo name and create it
+for repo in repo_names:
+    repo_data = {
+        "name": repo,
+        "description": f"Automatically created repository: {repo}",
+        "private": False
+    }
+
+    response = requests.post(
+        GITHUB_API_URL, json=repo_data, auth=(GITHUB_USERNAME, GITHUB_TOKEN)
+    )
+
+    if response.status_code == 201:
+        print(f"✅ Repository '{repo}' created successfully!")
+    else:
+        print(f"❌ Error creating '{repo}': {response.json()}")
+
+    time.sleep(1)  # Add delay to avoid hitting API rate limits
